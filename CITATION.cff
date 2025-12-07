@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "TopiCLEAR: Topic extraction by CLustering Embeddings with Adaptive dimensional Reduction"
+authors:
+  - family-names: Fujita
+    given-names: Aoi
+  - family-names: Yamamoto
+    given-names: Taichi
+  - family-names: Nakayama
+    given-names: Yuri
+  - family-names: Kobayashi
+    given-names: Ryota
+date-released: 2025-12-08
+version: "0.1.0"
+repository-code: "https://github.com/aoi8716/topiclear"

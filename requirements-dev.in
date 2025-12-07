@@ -1,0 +1,13 @@
+-c requirements.lock
+
+pip-tools
+bump2version
+Click
+coverage
+flake8
+pytest
+Sphinx
+tox
+twine
+watchdog
+wheel

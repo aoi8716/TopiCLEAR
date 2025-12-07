@@ -1,0 +1,26 @@
+[project]
+name = "topiclear"
+version = "0.1.0"
+description = "TopiCLEAR: Topic extraction by CLustering Embeddings with Adaptive dimensional Reduction"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+dependencies = [
+  "numpy>=1.21,<2",
+  "scipy>=1.9,<2",
+  "scikit-learn>=1.2,<2",
+  "clustpy>=0.0.2",
+  "sentence-transformers>=2.2.0"
+]
+
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["topiclear*"]

@@ -1,0 +1,4 @@
+# Minimal example config (optional)
+n_clusters: 20
+n_dims: 2
+random_state: 0
