@@ -161,7 +161,10 @@ The exact preprocessing and hyperparameters follow the settings described in Sec
 
 If you use this code or the TopiCLEAR method in academic work, please cite:
 
-Fujita, A., Yamamoto, T., Nakayama, Y., Kobayashi, R. TopiCLEAR: Topic extraction by CLustering Embeddings with Adaptive dimensional Reduction, arXiv preprint arXiv:2512.06694, 2025
+Fujita, A., Yamamoto, T., Nakayama, Y., & Kobayashi, R. (2027).
+TopiCLEAR: Adaptive embedding clustering for interpretable topic discovery from short texts.
+_Expert Systems with Applications, 333_, 133996.
+https://doi.org/10.1016/j.eswa.2026.133996
 
 A machine readable citation is also available in the file CITATION.cff in this repository.
 
