@@ -4,7 +4,7 @@ Adaptive clustering of sentence embeddings for topic extraction.
 
 This repository contains the reference implementation of TopiCLEAR (Topic extraction by CLustering Embeddings with Adaptive dimensional Reduction), the method proposed in:
 
-Fujita, A., Yamamoto, T., Nakayama, Y., Kobayashi, R. "TopiCLEAR: Topic extraction by CLustering Embeddings with Adaptive dimensional Reduction", 2025.
+Fujita, A., Yamamoto, T., Nakayama, Y., & Kobayashi, R. (2027). "TopiCLEAR: Adaptive embedding clustering for interpretable topic discovery from short texts." Expert Systems with Applications, 333, 133996. https://doi.org/10.1016/j.eswa.2026.133996
 
 TopiCLEAR clusters sentence level embeddings with an iterative procedure that alternates between:
 
@@ -90,9 +90,29 @@ labels = model.fit_predict(embeddings)
 
 You can also provide a pre initialised embedding model through the embedding_model argument when input_type is "text"; this is useful if you want to reuse the same SentenceTransformer instance across multiple runs.
 
+### K-means variant
+
+The K-means variant used in the paper is available as `TopiCLEARKMeans`.
+
+```python
+from topiclear import TopiCLEARKMeans
+
+model = TopiCLEARKMeans(
+    n_clusters=K,
+    input_type="embedding",
+    random_state=0,
+)
+
+labels = model.fit_predict(embeddings)
+```
+
+By default, this variant uses the paper settings `dim_preprocess=64`, `random_state_pca=50`, `max_iter=10`, `n_init=1`, and `kmeans_repetitions=10`.
+
+For out-of-sample prediction, `predict` uses the rotation associated with the final fitted KMeans model. The `transform` method continues to return the final LDA subspace.
+
 ## API overview
 
-The main entry point is the class topiclear.TopiCLEAR, which follows the scikit learn estimator interface.
+The main entry points are `topiclear.TopiCLEAR` and `topiclear.TopiCLEARKMeans`, which follow the scikit learn estimator interface.
 
 Constructor arguments (main ones)
 
@@ -100,7 +120,8 @@ Constructor arguments (main ones)
 - n_dims: dimension of the discriminative subspace; defaults to n_clusters minus one
 - max_iter: maximum number of ADR iterations
 - n_init: number of random initialisations of the algorithm
-- gmm_repetitions: number of initialisations inside each GaussianMixture fit
+- gmm_repetitions: number of initialisations inside each GaussianMixture fit for `TopiCLEAR`
+- kmeans_repetitions: number of initialisations inside each KMeans fit for `TopiCLEARKMeans`
 - dim_preprocess: PCA dimension used before normalisation (default 64)
 - random_state_pca: random seed for the preprocessing PCA
 - random_state: seed for all other random choices
@@ -114,18 +135,20 @@ Constructor arguments (main ones)
 Methods
 
 - fit(X, y=None): runs TopiCLEAR on the data
-- predict(X): assign clusters to new data using the learned rotation and Gaussian mixture
-- fit_predict(X, y=None): convenience method that calls fit followed by predict
+- predict(X): assign clusters to new data using the fitted Gaussian mixture for `TopiCLEAR` or the final fitted KMeans model for `TopiCLEARKMeans`
+- fit_predict(X, y=None): fit the model and return the cluster labels for the fitted data
 - transform(X): project data into the learned low dimensional subspace
 
 Attributes
 
 - labels\_: cluster labels obtained on the data passed to fit or fit_predict
 - rotation\_: projection matrix that maps the preprocessed embeddings into the low dimensional subspace
-- cluster*centers*: cluster centers in the rotated subspace
-- n*features_in*: number of features seen during fitting
-- error\_: final objective value (average negative log likelihood under the Gaussian mixture)
-- n*iter*: number of iterations executed by the ADR loop
+- cluster_centers_: cluster centers returned by the fitted clustering model
+- n_features_in_: number of features seen during fitting
+- error_: final objective value; average negative log likelihood for `TopiCLEAR` and KMeans inertia for `TopiCLEARKMeans`
+- n_iter_: number of ADR iterations executed by `TopiCLEAR`
+- prediction_rotation_: rotation used by the final KMeans model in `TopiCLEARKMeans`
+- kmeans_: final fitted KMeans model in `TopiCLEARKMeans`
 
 For more details about the algorithm, see Section 3 of the paper and Algorithm 1 in the main text.
 
