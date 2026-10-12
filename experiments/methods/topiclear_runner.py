@@ -7,7 +7,7 @@ def run_topiclear(X: Sequence[str] | np.ndarray,
                 n_topics: int,
                 input_type: Literal["text", "embedding"] = "text",
                 random_state: int = 0,
-                n_dims: int = 64,
+                n_dims: Optional[int] = None,
                 max_iter: int = 10,
                 n_init: int = 1,
                 gmm_repetitions: int = 10,
@@ -43,7 +43,7 @@ def run_topiclear(X: Sequence[str] | np.ndarray,
     dim_preprocess : int, optional
         Dimensionality for preprocessing embeddings, by default 64.
     random_state_pca : int, optional
-        Random state for PCA preprocessing, by default 0.
+        Random state for PCA preprocessing, by default 50.
     embedding_model_name : str, optional
         Name of the embedding model to use, by default "sentence-transformers/all-MiniLM-L6-v2".
     embedding_model : Optional[Any], optional

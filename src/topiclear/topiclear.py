@@ -92,7 +92,7 @@ def _topiclear(X: np.ndarray, n_clusters: int, n_dims: int, max_iter: int, gmm_r
     St = np.matmul(centered_points.T, centered_points) / (X.shape[0] - 1)
     
     # Get initial rotation
-    pca = PCA(n_dims)
+    pca = PCA(n_dims, random_state=int(random_state.get_state()[1][0]))
     pca.fit(X)
     rotation = pca.components_.T
     
@@ -117,7 +117,7 @@ def _topiclear(X: np.ndarray, n_clusters: int, n_dims: int, max_iter: int, gmm_r
             _, eigen_vectors = eigh(Sb, Sw)
             # Take the eigenvectors with largest eigenvalues
             rotation = eigen_vectors[:, ::-1][:, :n_dims]
-        except:
+        except np.linalg.LinAlgError:
             # In case errors occur during eigenvalue decomposition keep algorithm running
             pass
         
@@ -203,7 +203,7 @@ class TopiCLEAR(TransformerMixin, ClusterMixin, BaseEstimator):
         self.max_iter = max_iter
         self.n_init = n_init
         self.gmm_repetitions = gmm_repetitions
-        self.random_state = check_random_state(random_state)
+        self.random_state = random_state
         self.dim_preprocess = dim_preprocess
         self.random_state_pca = random_state_pca
         
@@ -301,7 +301,8 @@ class TopiCLEAR(TransformerMixin, ClusterMixin, BaseEstimator):
         self._fit_preprocessor(X)
         normalized_vectors = self._preprocess(X)
         
-        all_random_states = self.random_state.choice(10000, self.n_init, replace=False)
+        rng = check_random_state(self.random_state)
+        all_random_states = rng.choice(10000, self.n_init, replace=False)
         best_costs = np.inf
         
         for i in range(self.n_init):
@@ -442,7 +443,7 @@ class TopiCLEAR(TransformerMixin, ClusterMixin, BaseEstimator):
     
     def score(self, X: Sequence[str] | np.ndarray) -> float:
         """
-        Compute the negative log-likelihood of the input data under the fitted GMM.
+        Compute the mean log-likelihood of the input data under the fitted GMM.
         
         Parameters
         ----------
@@ -452,10 +453,10 @@ class TopiCLEAR(TransformerMixin, ClusterMixin, BaseEstimator):
         Returns
         -------
         log_likelihood : float
-            The negative log-likelihood of the input data
+            The mean log-likelihood of the input data
         """
         X_arr = self._ensure_array(X)
         check_is_fitted(self, ["gmm_"])
         X_transformed = self._transform_on_array(X_arr)
-        log_likelihood = -self.gmm_.score(X_transformed)
+        log_likelihood = self.gmm_.score(X_transformed)
         return float(log_likelihood)

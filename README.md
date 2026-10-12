@@ -138,6 +138,7 @@ Methods
 - predict(X): assign clusters to new data using the fitted Gaussian mixture for `TopiCLEAR` or the final fitted KMeans model for `TopiCLEARKMeans`
 - fit_predict(X, y=None): fit the model and return the cluster labels for the fitted data
 - transform(X): project data into the learned low dimensional subspace
+- score(X): mean log-likelihood for `TopiCLEAR` (higher is better); not supported for `TopiCLEARKMeans`
 
 Attributes
 
