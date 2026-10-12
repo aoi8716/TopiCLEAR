@@ -220,7 +220,8 @@ class TopiCLEARKMeans(TopiCLEAR):
         self._fit_preprocessor(X)
         normalized_vectors = self._preprocess(X)
 
-        all_random_states = self.random_state.choice(
+        rng = check_random_state(self.random_state)
+        all_random_states = rng.choice(
             10000,
             self.n_init,
             replace=False
